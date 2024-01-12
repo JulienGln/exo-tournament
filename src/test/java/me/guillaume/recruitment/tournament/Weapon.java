@@ -6,19 +6,25 @@ public class Weapon {
     private int damage;
     private int durability;
     private boolean block;
+    private int nbHands;
 
     public Weapon(String name,String type, int damage){
+        this.name = name;
         this.type = type;
         this.damage = damage;
         durability = 10;
         block = true;
+        nbHands = 1;
     }
 
     public Weapon(String name,String type, int damage, int durability){
-        this.type = type;
-        this.damage = damage;
+        this(name, type, damage);
         this.durability = durability;
-        block = true;
+    }
+
+    public Weapon(String name,String type, int damage, int durability, int hands){
+        this(name, type, damage, durability);
+        nbHands = hands;
     }
 
 

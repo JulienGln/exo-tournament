@@ -14,8 +14,16 @@ public class Fighter {
 
     public void engage(Fighter fighter) {
         while (hitPoints > 0 && fighter.hitPoints() > 0){
-            fighter.reduceHitPoints(weapons.get(0).getDamage());
-            reduceHitPoints(fighter.getWeapon().getDamage());
+            if(fighter.hasArmor()){
+                fighter.reduceHitPoints(weapons.get(0).getDamage() - 1);
+            } else {
+                fighter.reduceHitPoints(weapons.get(0).getDamage());
+            }
+            if(hasArmor()){
+                reduceHitPoints(fighter.getWeapon().getDamage() - 1);
+            } else {
+                reduceHitPoints(fighter.getWeapon().getDamage());
+            }
         }
     }
 
@@ -27,6 +35,16 @@ public class Fighter {
         };
         return false;
     }
+
+    public boolean hasArmor(){
+        for (Weapon weapon : weapons){
+            if(weapon.getType().equals("defense") && weapon.getName().equals("armor")){
+                return true;
+            }
+        };
+        return false;
+    }
+
 
     public Weapon getDefense(){
         for (Weapon weapon : weapons){
@@ -56,26 +74,35 @@ public class Fighter {
                 defense.setBlock(false);
                 defense.decreaseDurability();
             } else {
-                if (hitPoints - dmg >= 0){
-                    hitPoints -= dmg;
-                } else {
-                    hitPoints = 0;
-                }
+                attack(dmg);
                 if(defense.getDurability() > 0) {
                     defense.setBlock(true);
                 }
             }
         } else {
-            if (hitPoints - dmg >= 0){
-                hitPoints -= dmg;
-            } else {
-                hitPoints = 0;
-            }
+            attack(dmg);
         }
     }
 
     public int hitPoints() {
         return hitPoints;
+    }
+
+    public void attack(int dmg) {
+        if (this instanceof Highlander){
+            ((Highlander) this).addFatigue();
+            if(((Highlander) this).getFatigue() == 2) {
+                return; // le highlander ne peut pas attaqué car il est fatigué
+            }
+        }
+
+        if (hitPoints - dmg >= 0){
+            if(hasArmor()){
+                hitPoints -= (dmg - 3);
+            }
+        } else {
+            hitPoints = 0;
+        }
     }
 
 }
